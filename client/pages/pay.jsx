@@ -8,6 +8,15 @@ export default function Pay() {
   const router = useRouter();
 
   const [loading, setLoading] = React.useState(false);
+  const [transaction, setTransaction] = React.useState();
+
+  React.useEffect(() => {
+    const getTransaction = async (e) => {
+      const response = await API.get("/transaction");
+      setTransaction(response.data.data);
+    };
+    getTransaction();
+  }, []);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -61,20 +70,40 @@ export default function Pay() {
   return (
     <Layout pageTitle='Buy Premium'>
       <div className='text-white text-center md:mt-[13rem] mt-10'>
-        <h1 className='text-5xl font-bold mb-10'>Premium</h1>
-        <p>
-          Bayar sekarang dan nikmati streaming music yang kekinian dari{" "}
-          <b className='text-main'>DUMB</b>
-          <b>SOUND</b>
-        </p>
-        <p>
-          Hanya <b className='text-main'>Rp.20.000</b>
-        </p>
-        <Button
-          onClick={handleSubmit}
-          name={loading ? "Loading..." : "Pay"}
-          className='mt-10 bg-main text-white hover:bg-main/40 active:bg-main/80 py-2 w-32 rounded-lg'
-        />
+        <h1 className='text-5xl font-bold mb-10'>
+          {transaction == undefined ? "Premium" : "Anda Sudah Premium"}
+        </h1>
+        {transaction == undefined ? (
+          <>
+            <p>
+              Bayar sekarang dan nikmati streaming music yang kekinian dari
+              <b className='text-main'>DUMB</b>
+              <b>SOUND</b>
+            </p>
+            <p>
+              Hanya <b className='text-main'>Rp.20.000</b>
+            </p>
+          </>
+        ) : (
+          <>
+            {" "}
+            <p>
+              Nikmati streaming music yang kekinian dari
+              <b className='text-main'>DUMB</b>
+              <b>SOUND</b>
+            </p>
+            <p>
+              Sisa waktu <b className='text-main'>{transaction.limit} Hari</b>
+            </p>
+          </>
+        )}
+        {transaction == undefined && (
+          <Button
+            onClick={handleSubmit}
+            name={loading ? "Loading..." : "Pay"}
+            className='mt-10 bg-main text-white hover:bg-main/40 active:bg-main/80 py-2 w-32 rounded-lg'
+          />
+        )}
       </div>
     </Layout>
   );

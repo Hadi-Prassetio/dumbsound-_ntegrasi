@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import CheckAuth from "../context/checkAuth";
 import { UserContextProvider } from "../context/userContext";
 import "../styles/globals.css";
+import "../components/player/player.scss";
 
 export default function MyApp({ Component, ...pageProps }) {
   const client = new QueryClient();

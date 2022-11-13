@@ -9,8 +9,7 @@ import { API } from "./api/api";
 export default function AddProduct() {
   const [artist, setArtist] = React.useState();
   const [song, setSong] = React.useState();
-  const router = useRouter();
-
+  const [loading, setLoading] = React.useState(false);
   const getArtist = async () => {
     const response = await API.get("/artists");
     setArtist(response.data.data);
@@ -30,6 +29,7 @@ export default function AddProduct() {
   const handleSubmit = useMutation(async (e) => {
     try {
       e.preventDefault();
+      setLoading(true);
 
       const formData = new FormData();
       formData.set("title", song.title);
@@ -41,9 +41,11 @@ export default function AddProduct() {
 
       await API.post("/song", formData);
       Success({ message: "Song Added" });
+      setLoading(false);
     } catch (error) {
       console.log(error);
       Warning({ message: "Failed Add Song" });
+      setLoading(false);
     }
   });
 
@@ -118,7 +120,7 @@ export default function AddProduct() {
             <button
               type='submit'
               className='w-[30%] py-1 px-10 bg-btn text-white my-3 rounded-lg text-center hover:bg-main/70 active:bg-main'>
-              Add Song
+              {loading ? "loading..." : "Add Song"}
             </button>
           </div>
         </form>

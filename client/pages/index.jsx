@@ -4,11 +4,19 @@ import Card from "../components/card";
 import Layout from "../components/layout";
 import { UserContext } from "../context/userContext";
 import { API } from "./api/api";
+import PlayModal from "../components/playModal";
+import Player from "../components/player/player";
 
 export default function Home() {
   const router = useRouter();
   const [auth, setAuth] = React.useContext(UserContext);
   const [song, setSong] = React.useState();
+
+  const [playMusic, setPlayMusic] = React.useState();
+
+  const [transaction, setTransaction] = React.useState();
+
+  const [play, setPlay] = React.useState(false);
 
   const [showLogin, setShowLogin] = React.useState(false);
   const loginFirst = () => setShowLogin(true);
@@ -23,6 +31,38 @@ export default function Home() {
       }
     };
     getSong();
+  }, []);
+
+  const [isplaying, setisplaying] = React.useState(false);
+  const audioElem = React.useRef();
+
+  React.useEffect(() => {
+    if (isplaying) {
+      audioElem.current?.play();
+    } else {
+      audioElem.current?.pause();
+    }
+  }, [isplaying]);
+
+  const onPlaying = () => {
+    const duration = audioElem.current.duration;
+    const ct = audioElem.current.currentTime;
+
+    setPlayMusic({
+      ...playMusic,
+      progress: (ct / duration) * 100,
+      length: duration,
+    });
+  };
+
+  React.useEffect(() => {
+    if (auth.user.status == "user") {
+      const getTransaction = async (e) => {
+        const response = await API.get("/transaction");
+        setTransaction(response.data.data);
+      };
+      getTransaction();
+    }
   }, []);
 
   return (
@@ -45,7 +85,12 @@ export default function Home() {
               onClick={
                 !auth.isLogin
                   ? loginFirst
-                  : () => router.push(`/menu/${item.id}`)
+                  : transaction == undefined
+                  ? () => router.push("/pay")
+                  : () => {
+                      setPlay(true);
+                      setPlayMusic(item);
+                    }
               }>
               <Card>
                 <div>
@@ -58,7 +103,7 @@ export default function Home() {
                 <div className='grid grid-cols-4 px-2 py-2'>
                   <div className='col-span-3 text-white'>
                     <h5 className='mb-2 md:text-sm font-bold tracking-tightfont-mainFont'>
-                      {item.title}
+                      {item.title.slice(0, 13)}...
                     </h5>
 
                     <p className='mb-3 md:font-xl text-xs '>
@@ -72,6 +117,28 @@ export default function Home() {
           ))}
         </div>
       </div>
+      <PlayModal
+        isVisible={play}
+        onClose={() => setPlay(false)}
+        setisplaying={setisplaying}>
+        <div>
+          <audio
+            src={playMusic?.song}
+            ref={audioElem}
+            onTimeUpdate={onPlaying}
+          />
+
+          <Player
+            songs={song}
+            setSongs={setSong}
+            isplaying={isplaying}
+            setisplaying={setisplaying}
+            audioElem={audioElem}
+            currentSong={playMusic}
+            setCurrentSong={setPlayMusic}
+          />
+        </div>
+      </PlayModal>
     </Layout>
   );
 }

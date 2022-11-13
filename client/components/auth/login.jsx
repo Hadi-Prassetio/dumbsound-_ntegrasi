@@ -10,6 +10,7 @@ import { Error, Success } from "../../helper/toast";
 export default function Login() {
   const [auth, setAuth] = React.useContext(UserContext);
   const router = useRouter();
+  const [loading, setLoading] = React.useState(false);
 
   const [user, setUser] = React.useState({});
   const handleChange = (e) => {
@@ -22,9 +23,10 @@ export default function Login() {
   const handleSubmit = useMutation(async (e) => {
     try {
       e.preventDefault();
-
+      setLoading(true);
       const response = await API.post("/login", user);
       Success({ message: `Login Success!` });
+      setLoading(false);
       if (response?.status === 200) {
         setAuth({
           type: "LOGIN",
@@ -38,6 +40,7 @@ export default function Login() {
       }
     } catch (error) {
       Error({ message: `Login Failed` });
+      setLoading(false);
     }
   });
 
@@ -59,7 +62,7 @@ export default function Login() {
         onChange={handleChange}
       />
       <Button
-        name='Login'
+        name={loading ? "loading..." : "Login"}
         type='submit'
         className='w-full bg-btn text-white rounded-lg py-2 my-5 hover:bg-main/70 active:bg-main'
       />

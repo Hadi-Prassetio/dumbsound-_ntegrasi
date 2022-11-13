@@ -8,7 +8,7 @@ import { Success, Warning } from "../helper/toast";
 
 export default function AddProduct() {
   const [artist, setArtist] = React.useState();
-  // console.log(artist);
+  const [loading, setLoading] = React.useState(false);
 
   const router = useRouter();
 
@@ -24,18 +24,19 @@ export default function AddProduct() {
     try {
       e.preventDefault();
 
+      setLoading(true);
       const name = artist.name;
       const role = artist.role;
       const old = JSON.parse(artist.old);
       const start_career = JSON.parse(artist.start_career);
-
       const body = { name, role, old, start_career };
-      console.log(body, "tessss");
 
-      await API.post("/artist", body);
+      const response = await API.post("/artist", body);
       Success({ message: "Artist Added" });
+      setLoading(false);
     } catch (error) {
       Warning({ message: "Failed Add Artist" });
+      setLoading(false);
     }
   });
 
@@ -85,7 +86,7 @@ export default function AddProduct() {
             <button
               type='submit'
               className='w-[30%] py-1 px-10 bg-btn text-white my-3 rounded-lg text-center hover:bg-main/70 active:bg-main'>
-              Add Artist
+              {loading ? "loading..." : "Add Artist"}
             </button>
           </div>
         </form>

@@ -39,7 +39,7 @@ export default function MenuUser() {
       <div className='flex items-center'>
         <div className='ml-5'>
           <button onClick={() => setShowDropdown(true)}>
-            <div className=''>
+            <div>
               <img
                 // src={profile?.image == "" ? "/user.png" : profile?.image}
                 src='user.png'
@@ -59,7 +59,7 @@ export default function MenuUser() {
                 : "flex items-center mb-1 mr-10 ml-4 cursor-pointer"
             }>
             <Image src='/pay.svg' alt='profile' width={33.37} height={39.95} />
-            <p className='ml-2'>Pay</p>
+            <p className='ml-2 text-white'>Pay</p>
           </div>
         </Link>
         <Link href='/add-song'>
@@ -75,7 +75,7 @@ export default function MenuUser() {
               width={33.37}
               height={39.95}
             />
-            <p className='ml-2'>Add Song</p>
+            <p className='ml-2 text-white'>Add Song</p>
           </div>
         </Link>
         <Link href='/add-artist'>
@@ -91,7 +91,7 @@ export default function MenuUser() {
               width={33.37}
               height={39.95}
             />
-            <p className='ml-2'>Add Artist</p>
+            <p className='ml-2 text-white'>Add Artist</p>
           </div>
         </Link>
         <hr />
@@ -99,7 +99,7 @@ export default function MenuUser() {
           onClick={logOut}
           className='flex items-center mt-1  mr-10 ml-4 cursor-pointer'>
           <Image src='/logout.svg' alt='profile' width={33.37} height={39.95} />
-          <p className='ml-2'>Logout</p>
+          <p className='ml-2 text-white'>Logout</p>
         </div>
       </DropDown>
     </Fragment>

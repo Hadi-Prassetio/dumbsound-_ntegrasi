@@ -7,6 +7,8 @@ import { Success, Error } from "../../helper/toast";
 
 export default function Register() {
   const [form, setForm] = React.useState({});
+  const [loading, setLoading] = React.useState(false);
+
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -17,11 +19,13 @@ export default function Register() {
   const handleSubmit = useMutation(async (e) => {
     try {
       e.preventDefault();
-
+      setLoading(true);
       const response = await API.post("/register", form);
       Success({ message: "Success Register" });
+      setLoading(false);
     } catch (error) {
       Error({ message: "Failed Register" });
+      setLoading(false);
     }
   });
 
@@ -78,7 +82,7 @@ export default function Register() {
         onChange={handleChange}
       />
       <Button
-        name='Register'
+        name={loading ? "loading..." : "Register"}
         type='submit'
         className='w-full bg-btn text-white rounded-lg py-2 my-5 hover:bg-main/70 active:bg-main/70'
       />
