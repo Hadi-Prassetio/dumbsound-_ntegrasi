@@ -13,10 +13,13 @@ const Player = ({
   const PlayPause = () => {
     setisplaying(!isplaying);
   };
+  const Play = () => {
+    setisplaying(true);
+  };
 
   const checkWidth = (e) => {
     let width = clickRef.current.clientWidth;
-    const offset = e.nativeEvent.offsetX;
+    const offset = e?.nativeEvent.offsetX;
 
     const divprogress = (offset / width) * 100;
     audioElem.current.currentTime = (divprogress / 100) * currentSong.length;
@@ -49,7 +52,11 @@ const Player = ({
         <img
           src={currentSong.image}
           alt='thumbnail'
-          className='w-[4rem] h-[4rem] rounded-full animate-spin-slow'
+          className={
+            isplaying
+              ? "w-[4rem] h-[4rem] rounded-full animate-spin-slow"
+              : "w-[4rem] h-[4rem] rounded-full"
+          }
         />
         <div className='col-span-11 ml-2 grid grid-cols-3'>
           <div className='title text-center col-span-3'>
@@ -58,7 +65,13 @@ const Player = ({
           <div className='navigation col-span-3'>
             <div
               className='navigation_wrapper'
-              onClick={checkWidth}
+              onClick={
+                !isplaying
+                  ? () => {
+                      Play();
+                    }
+                  : checkWidth
+              }
               ref={clickRef}>
               <div
                 className='seek_bar'
